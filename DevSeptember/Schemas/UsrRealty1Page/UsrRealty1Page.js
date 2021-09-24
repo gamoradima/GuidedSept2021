@@ -118,6 +118,60 @@ define("UsrRealty1Page", ["RightUtilities"], function(RightUtilities) {
 			}
 		}/**SCHEMA_BUSINESS_RULES*/,
 		methods: {
+			
+			asyncValidate: function(callback, scope) {
+				this.callParent([
+					function(response) {
+						if (!this.validateResponse(response)) {
+							return;
+						}
+						this.validateRealtyData(function(response) {
+							if (!this.validateResponse(response)) {
+								return;
+							}
+							callback.call(scope, response);
+						}, this);
+					}, this]);
+			},
+
+			validateRealtyData: function(callback, scope) {
+				// create query for server side
+				var esq = this.Ext.create("Terrasoft.EntitySchemaQuery", {
+					rootSchemaName: "UsrRealty"
+				});
+				esq.addAggregationSchemaColumn("UsrPriceUSD", Terrasoft.AggregationType.SUM, "PriceSum"); // select SUM(UsrPriceUSD) from UsrRealty where ...
+				var saleOfferTypeId = "555de384-074b-49a7-9ad3-91c006a6a7ad";
+				var saleFilter = esq.createColumnFilterWithParameter(this.Terrasoft.ComparisonType.EQUAL,
+							"UsrOfferType", saleOfferTypeId);
+				esq.filters.addItem(saleFilter);
+				// run query
+				esq.getEntityCollection(function(response) {
+					if (response.success && response.collection) {
+						var sum = 0;
+						var items = response.collection.getItems();
+						if (items.length > 0) {
+							sum = items[0].get("PriceSum");
+						}
+						var max = 1000000;
+						if (sum > max) {
+							if (callback) {
+								callback.call(this, {
+									success: false,
+									message: "You cannot save, because sum = " + sum + " is bigger than " + max
+								});
+							}
+						} else
+						if (callback) {
+							callback.call(scope, {
+								success: true
+							});
+						}
+					}
+				}, this);
+			},
+ 
+			
+			
 			calculateCommission: function() {
 				var result = 0;
 				var price = this.get("UsrPriceUSD");
