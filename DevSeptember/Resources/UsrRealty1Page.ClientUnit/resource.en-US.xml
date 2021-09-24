@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Resources Culture="en-US">
+	<Group Type="String">
+		<Items>
+			<Item Name="Caption" Value="Страница редактирования: &quot;Недвижимость&quot;" />
+			<Item Name="LocalizableStrings.MyButtonCaption.Value" Value="BUtton!" />
+			<Item Name="LocalizableStrings.Tabfbe82cfdTabLabelTabCaption.Value" Value="Просмотры" />
+			<Item Name="LocalizableStrings.UsrSchema6335a45fDetail09caba6cDetailCaptionOnPage.Value" Value="Просмотр недвижимости" />
+			<Item Name="LocalizableStrings.ValueMustBePositive.Value" Value="Value must be greater than 0" />
+		</Items>
+	</Group>
+</Resources>
